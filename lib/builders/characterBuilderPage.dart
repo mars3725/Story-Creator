@@ -19,7 +19,6 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
   final _formKey = GlobalKey<FormState>();
   List<Step> steps;
 
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +28,9 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
           content: Padding(
               padding: EdgeInsets.symmetric(vertical: 5),
               child: Wrap(runSpacing: 20, children: <Widget>[
-                textField(binding: 'beginning', label: 'In the beginning our hero believed'),
+                textField(
+                    binding: 'beginning',
+                    label: 'In the beginning our hero believed'),
                 textField(binding: 'end', label: 'By the end our hero believes')
               ]))),
       Step(
@@ -47,7 +48,9 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
                 textField(binding: 'raised', label: 'Raised'),
                 textField(binding: 'languages', label: 'Language/s'),
                 textField(binding: 'family', label: 'Family'),
-                textField(binding: 'childhoodSocioeconomicLevel', label: 'Socioeconomic level as a child'),
+                textField(
+                    binding: 'childhoodSocioeconomicLevel',
+                    label: 'Socioeconomic level as a child'),
                 textField(binding: 'education', label: 'Education'),
               ]))),
       Step(
@@ -57,17 +60,22 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
               child: Wrap(runSpacing: 20, children: <Widget>[
                 textField(binding: 'residence', label: 'Current residence'),
                 textField(binding: 'profession', label: 'Current profession'),
-                textField(binding: 'socioeconomicLevel', label: 'Current socioeconomic level'),
+                textField(
+                    binding: 'socioeconomicLevel',
+                    label: 'Current socioeconomic level'),
               ]))),
       Step(
           title: Text('Relationship Status'),
           content: Padding(
               padding: EdgeInsets.symmetric(vertical: 5),
               child: Wrap(runSpacing: 20, children: <Widget>[
-                textField(binding: 'romanticBeliefs', label: 'Romantic beliefs'),
-                textField(binding: 'sexualOrientation', label: 'Sexual orientation'),
+                textField(
+                    binding: 'romanticBeliefs', label: 'Romantic beliefs'),
+                textField(
+                    binding: 'sexualOrientation', label: 'Sexual orientation'),
                 textField(binding: 'attraction', label: 'Attraction'),
-                textField(binding: 'signifigantOther', label: 'Signifigant other'),
+                textField(
+                    binding: 'signifigantOther', label: 'Signifigant other'),
               ]))),
       Step(
           title: Text('Unique Traits'),
@@ -83,16 +91,25 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
           content: Padding(
               padding: EdgeInsets.symmetric(vertical: 5),
               child: Wrap(runSpacing: 20, children: <Widget>[
-                textField(binding: 'personalityType', label: 'Personality Type'),
+                textField(
+                    binding: 'personalityType', label: 'Personality Type'),
                 textField(binding: 'intelligence', label: 'Intelligence'),
                 textField(binding: 'spirituality', label: 'Spirituality'),
                 textField(binding: 'emotionality', label: 'Emotionality'),
                 textField(binding: 'coreValues', label: 'Core Values'),
                 textField(binding: 'socialValues', label: 'Social Values'),
-                textField(binding: 'percievedStrength', label: 'Greatest Percieved Strength'),
-                textField(binding: 'actualStrength', label: 'Greatest Actual Strength'),
-                textField(binding: 'percievedWeakness', label: 'Greatest Percieved Weakness'),
-                textField(binding: 'actualWeakness', label: 'Greatest Actual Weakness'),
+                textField(
+                    binding: 'percievedStrength',
+                    label: 'Greatest Percieved Strength'),
+                textField(
+                    binding: 'actualStrength',
+                    label: 'Greatest Actual Strength'),
+                textField(
+                    binding: 'percievedWeakness',
+                    label: 'Greatest Percieved Weakness'),
+                textField(
+                    binding: 'actualWeakness',
+                    label: 'Greatest Actual Weakness'),
                 textField(binding: 'innerConflict', label: 'Inner Conflict'),
                 textField(binding: 'alignment', label: 'Alignment'),
               ]))),
@@ -108,7 +125,9 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
           content: Padding(
               padding: EdgeInsets.symmetric(vertical: 5),
               child: Wrap(runSpacing: 20, children: <Widget>[
-                textField(binding: 'characterNotes', label: 'Important Character Notes'),
+                textField(
+                    binding: 'characterNotes',
+                    label: 'Important Character Notes'),
               ]))),
     ];
   }
@@ -118,41 +137,71 @@ class _CharacterBuilderPageState extends State<CharacterBuilderPage> {
     print(currentStep);
     return Scaffold(
         body: Column(children: <Widget>[
-          Padding(padding: EdgeInsets.only(left: 50, top: 50, right: 50),
-              child: Row(children: <Widget>[
-                Align(alignment: Alignment.topLeft,
-                    child: GestureDetector(
-                        child: Icon(Icons.close, size: 40), onTap: () => Navigator.of(context).pop())),
-                Expanded(child: Center(child: Text('Character Builder', style: TextStyle(fontSize: 24))))
-              ])),      Expanded(
+      Padding(
+          padding: EdgeInsets.only(left: 50, top: 50, right: 50),
+          child: Row(children: <Widget>[
+            Align(
+                alignment: Alignment.topLeft,
+                child: GestureDetector(
+                    child: Icon(Icons.close, size: 40),
+                    onTap: () => Navigator.of(context).pop())),
+            Expanded(
+                child: Center(
+                    child: Text('Character Builder',
+                        style: TextStyle(fontSize: 24),
+                        textAlign: TextAlign.center)))
+          ])),
+      Expanded(
           child: Form(
               key: _formKey,
               child: Stepper(
                   currentStep: currentStep,
                   controlsBuilder: (context, {onStepContinue, onStepCancel}) =>
-                      MaterialButton(onPressed: onStepContinue, child: Text(currentStep == steps.length-1 ? 'Finish' : 'Next'), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)), color: Colors.blue),
+                      MaterialButton(
+                          onPressed: onStepContinue,
+                          child: Text(currentStep == steps.length - 1
+                              ? 'Finish'
+                              : 'Next'),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)),
+                          color: Colors.blue),
                   onStepContinue: () {
                     _formKey.currentState.save();
                     if (currentStep == steps.length - 1)
-                      saveData().whenComplete(() => Navigator.of(context).pop());
+                      saveData()
+                          .whenComplete(() => Navigator.of(context).pop());
                     else
                       this.setState(() => currentStep++);
                   },
-                  onStepTapped: (step) => this.setState(() => currentStep = step),
+                  onStepTapped: (step) =>
+                      this.setState(() => currentStep = step),
                   steps: steps)))
     ]));
   }
 
   saveData() async {
     if (widget.data['id'] == null)
-      await database.insert('characters', widget.data..['id'] = Random().nextInt(1000000), conflictAlgorithm: ConflictAlgorithm.replace);
+      await database.insert(
+          'characters', widget.data..['id'] = Random().nextInt(1000000),
+          conflictAlgorithm: ConflictAlgorithm.replace);
     else
-      await database.update('characters', widget.data, where: 'id = ?', whereArgs: [widget.data['id']]);
+      await database.update('characters', widget.data,
+          where: 'id = ?', whereArgs: [widget.data['id']]);
   }
 
-  TextFormField textField({@required String binding, String label, String tooltip}) => TextFormField(
-      maxLines: null,
-      decoration: InputDecoration(labelText: label, border: OutlineInputBorder(), suffixIcon: tooltip != null ? Tooltip(message: tooltip, showDuration: Duration(seconds: 5), child: Icon(Icons.help)) : null),
-      initialValue: widget.data[binding],
-      onSaved: (value) => widget.data[binding] = value);
+  TextFormField textField(
+          {@required String binding, String label, String tooltip}) =>
+      TextFormField(
+          maxLines: null,
+          decoration: InputDecoration(
+              labelText: label,
+              border: OutlineInputBorder(),
+              suffixIcon: tooltip != null
+                  ? Tooltip(
+                      message: tooltip,
+                      showDuration: Duration(seconds: 5),
+                      child: Icon(Icons.help))
+                  : null),
+          initialValue: widget.data[binding],
+          onSaved: (value) => widget.data[binding] = value);
 }

@@ -16,7 +16,11 @@ class RouteButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         color: this.color,
         padding: EdgeInsets.all(10),
-        child: Column(children: <Widget>[Text(this.text, style: TextStyle(fontSize: 24)), Icon(this.icon)]));
+        child: Column(children: <Widget>[
+          Text(this.text,
+              style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+          Icon(this.icon)
+        ]));
   }
 }
 
@@ -32,11 +36,20 @@ class PDFButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                FutureBuilder<PDFDocument>(future: PDFDocument.fromAsset(this.asset), builder: (context, snapshot) => Scaffold(appBar: AppBar(), body: snapshot.hasData ? PDFViewer(document: snapshot.data) : Center(child: CircularProgressIndicator()))))),
+            builder: (context) => FutureBuilder<PDFDocument>(
+                future: PDFDocument.fromAsset(this.asset),
+                builder: (context, snapshot) => Scaffold(
+                    appBar: AppBar(),
+                    body: snapshot.hasData
+                        ? PDFViewer(document: snapshot.data)
+                        : Center(child: CircularProgressIndicator()))))),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         color: this.color,
         padding: EdgeInsets.all(10),
-        child: Column(children: <Widget>[Text(this.text, style: TextStyle(fontSize: 24)), Icon(this.icon)]));
+        child: Column(children: <Widget>[
+          Text(this.text,
+              style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+          Icon(this.icon)
+        ]));
   }
 }
