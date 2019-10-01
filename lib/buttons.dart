@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 
 class RouteButton extends StatelessWidget {
-  const RouteButton({this.color, this.text, this.icon, this.route});
+  const RouteButton({this.color, this.text, this.image, this.route});
 
   final Color color;
   final String text;
-  final IconData icon;
+  final String image;
   final String route;
 
   @override
@@ -19,17 +19,17 @@ class RouteButton extends StatelessWidget {
         child: Column(children: <Widget>[
           Text(this.text,
               style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
-          Icon(this.icon)
+          Image.asset(image, height: 50)
         ]));
   }
 }
 
 class PDFButton extends StatelessWidget {
-  const PDFButton({this.color, this.text, this.icon, this.asset});
+  const PDFButton({this.color, this.text, this.image, this.asset});
 
   final Color color;
   final String text;
-  final IconData icon;
+  final String image;
   final String asset;
 
   @override
@@ -49,7 +49,7 @@ class PDFButton extends StatelessWidget {
         child: Column(children: <Widget>[
           Text(this.text,
               style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
-          Icon(this.icon)
+          Image.asset(image, height: 50)
         ]));
   }
 }

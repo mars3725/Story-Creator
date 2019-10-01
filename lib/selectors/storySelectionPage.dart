@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'builders/storyBuilderPage.dart';
-import 'main.dart';
+import '../builders/storyBuilderPage.dart';
+import '../main.dart';
 
 class StorySelectionPage extends StatefulWidget {
   @override
@@ -38,25 +38,25 @@ class _StorySelectionPageState extends State<StorySelectionPage> {
                 future: getStories(),
                 builder: (context, snapshot) => snapshot.hasData
                     ? ListView.separated(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) => FlatButton(
-                            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => StoryBuilderPage(
-                                    Map.from(snapshot.data[index])))),
-                            child: Container(
-                                height: 50,
-                                child: Center(
-                                    child: Text(
-                                        (snapshot.data[index]['title'] ?? '') ==
-                                                ''.toString().isEmpty
-                                            ? snapshot.data[index]['title']
-                                            : 'Unnamed: ' +
-                                                snapshot.data[index]['id'].toString(),
-                                        style: TextStyle(fontSize: 18))))),
-                        separatorBuilder: (context, int) => Divider(
-                          color: Colors.grey,
-                        ),
-                      )
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) => FlatButton(
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => StoryBuilderPage(
+                              Map.from(snapshot.data[index])))),
+                      child: Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                                  (snapshot.data[index]['title'] ?? '') ==
+                                      ''.toString().isEmpty
+                                      ? snapshot.data[index]['title']
+                                      : 'Unnamed: ' +
+                                      snapshot.data[index]['id'].toString(),
+                                  style: TextStyle(fontSize: 18))))),
+                  separatorBuilder: (context, int) => Divider(
+                    color: Colors.grey,
+                  ),
+                )
                     : Center(child: CircularProgressIndicator())),
           )
         ]));

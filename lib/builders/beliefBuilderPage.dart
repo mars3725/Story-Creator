@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:share/share.dart';
 
 import '../main.dart';
 
@@ -18,6 +19,7 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
   int currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   List<Step> steps;
+  Map<String, String> exportFields = {};
 
   @override
   void initState() {
@@ -32,7 +34,7 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
                     binding: 'name',
                     label: 'Religion/Belief is called?',
                     tooltip:
-                        "This is what people call Religion/Belief. If it has multiple names then this is where you put them. Naming your Religion/BeIief can be influenced by the language of the world, or what it is known for."),
+                    "This is what people call Religion/Belief. If it has multiple names then this is where you put them. Naming your Religion/BeIief can be influenced by the language of the world, or what it is known for."),
                 textField(
                     binding: 'ideology',
                     label: 'What is the Religion/Belief ideology?'),
@@ -68,7 +70,7 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
                 textField(
                     binding: 'culture',
                     label:
-                        'What is the culture created by the Religion/Belief?'),
+                    'What is the culture created by the Religion/Belief?'),
                 textField(
                     binding: 'governance',
                     label: 'How is the Religion/Belief governed?')
@@ -111,48 +113,58 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
   @override
   Widget build(BuildContext context) {
     print(currentStep);
+    //steps.cast<Column>().first.children.cast<TextField>().
     return Scaffold(
         body: Column(children: <Widget>[
-      Padding(
-          padding: EdgeInsets.only(left: 50, top: 50, right: 50),
-          child: Row(children: <Widget>[
-            Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                    child: Icon(Icons.close, size: 40),
-                    onTap: () => Navigator.of(context).pop())),
-            Expanded(
-                child: Center(
-                    child: Text('Belief Builder',
-                        style: TextStyle(fontSize: 24),
-                        textAlign: TextAlign.center)))
-          ])),
-      Expanded(
-          child: Form(
-              key: _formKey,
-              child: Stepper(
-                  currentStep: currentStep,
-                  controlsBuilder: (context, {onStepContinue, onStepCancel}) =>
+          Padding(
+              padding: EdgeInsets.only(left: 50, top: 50, right: 50),
+              child: Row(children: <Widget>[
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: GestureDetector(
+                        child: Icon(Icons.close, size: 40),
+                        onTap: () => Navigator.of(context).pop())),
+                Expanded(
+                    child: Center(
+                        child: Text('Belief Builder',
+                            style: TextStyle(fontSize: 24),
+                            textAlign: TextAlign.center))),
+                RaisedButton(
+                    onPressed: () {
+                      _formKey.currentState.save();
+                      String data = '';
+                      exportFields.forEach((k,v)=> data+= '$k:\n$v\n\n');
+                      Share.share(data);
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    color: Colors.blue,
+                    child: Icon(Icons.call_made))
+              ])),
+          LinearProgressIndicator(value: currentStep/(steps.length-1)),
+          Expanded(
+              child: Form(
+                  key: _formKey,
+                  child: Stepper(
+                      currentStep: currentStep,
+                      controlsBuilder: (context, {onStepContinue, onStepCancel}) =>
+                      currentStep == steps.length - 1?
                       MaterialButton(
                           onPressed: onStepContinue,
-                          child: Text(currentStep == steps.length - 1
-                              ? 'Finish'
-                              : 'Next'),
+                          child: Text('Finish'),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
-                          color: Colors.blue),
-                  onStepContinue: () {
-                    _formKey.currentState.save();
-                    if (currentStep == steps.length - 1)
-                      saveData()
-                          .whenComplete(() => Navigator.of(context).pop());
-                    else
-                      this.setState(() => currentStep++);
-                  },
-                  onStepTapped: (step) =>
-                      this.setState(() => currentStep = step),
-                  steps: steps)))
-    ]));
+                          color: Colors.blue) : Container(),
+                      onStepContinue: () {
+                        _formKey.currentState.save();
+                        saveData().whenComplete(() => Navigator.of(context).pop());
+                      },
+                      onStepTapped: (step) {
+                        _formKey.currentState.save();
+                        this.setState(() => currentStep = step);
+                      },
+                      steps: steps)))
+        ]));
   }
 
   saveData() async {
@@ -166,7 +178,7 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
   }
 
   TextFormField textField(
-          {@required String binding, String label, String tooltip}) =>
+      {@required String binding, String label, String tooltip}) =>
       TextFormField(
           maxLines: null,
           decoration: InputDecoration(
@@ -174,10 +186,13 @@ class _BeliefBuilderPageState extends State<BeliefBuilderPage> {
               border: OutlineInputBorder(),
               suffixIcon: tooltip != null
                   ? Tooltip(
-                      message: tooltip,
-                      showDuration: Duration(seconds: 5),
-                      child: Icon(Icons.help))
+                  message: tooltip,
+                  showDuration: Duration(seconds: 5),
+                  child: Icon(Icons.help))
                   : null),
           initialValue: widget.data[binding],
-          onSaved: (value) => widget.data[binding] = value);
+          onSaved: (value) {
+            widget.data[binding] = value;
+            exportFields[label] = value;
+          });
 }

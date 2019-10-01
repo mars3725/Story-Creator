@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../main.dart';
@@ -18,6 +19,7 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
   int currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   List<Step> steps;
+  Map<String, String> exportFields = {};
 
   @override
   void initState() {
@@ -32,7 +34,7 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
                     binding: 'name',
                     label: 'Name',
                     tooltip:
-                        "This is the name of the entire world, or universe. What ever the name is will have some sort of meaning behind it, even if it's just location the name may be the language of the people who lived or currently live there."),
+                    "This is the name of the entire world, or universe. What ever the name is will have some sort of meaning behind it, even if it's just location the name may be the language of the people who lived or currently live there."),
                 textField(binding: 'country', label: 'Country'),
                 textField(binding: 'state', label: 'State/Province'),
                 textField(binding: 'capital', label: 'Capital/Major'),
@@ -40,7 +42,8 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
                 textField(binding: 'majorLocations', label: 'Major Locations'),
                 textField(
                     binding: 'majorLocationsResources',
-                    label: 'Major Location Resources'),
+                    label: 'Major Location Resources',
+                    tooltip: 'This is the resources of the other major location. This will be what this location has to offer or is known for.'),
                 textField(binding: 'climate', label: 'Climate'),
                 textField(binding: 'terrain', label: 'Terrain'),
                 textField(binding: 'wildlife', label: 'Wildlife'),
@@ -82,46 +85,57 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
     print(currentStep);
     return Scaffold(
         body: Column(children: <Widget>[
-      Padding(
-          padding: EdgeInsets.only(left: 50, top: 50, right: 50),
-          child: Row(children: <Widget>[
-            Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                    child: Icon(Icons.close, size: 40),
-                    onTap: () => Navigator.of(context).pop())),
-            Expanded(
-                child: Center(
-                    child: Text('World Builder',
-                        style: TextStyle(fontSize: 24),
-                        textAlign: TextAlign.center)))
-          ])),
-      Expanded(
-          child: Form(
-              key: _formKey,
-              child: Stepper(
-                  currentStep: currentStep,
-                  controlsBuilder: (context, {onStepContinue, onStepCancel}) =>
+          Padding(
+              padding: EdgeInsets.only(left: 50, top: 50, right: 50),
+              child: Row(children: <Widget>[
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: GestureDetector(
+                        child: Icon(Icons.close, size: 40),
+                        onTap: () => Navigator.of(context).pop())),
+                Expanded(
+                    child: Center(
+                        child: Text('World Builder',
+                            style: TextStyle(fontSize: 24),
+                            textAlign: TextAlign.center))),
+                RaisedButton(
+                    onPressed: () {
+                      _formKey.currentState.save();
+                      String data = '';
+                      exportFields.forEach((k,v)=> data+= '$k:\n$v\n\n');
+                      Share.share(data);
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    color: Colors.blue,
+                    child: Icon(Icons.call_made))
+              ])),
+          LinearProgressIndicator(value: currentStep/(steps.length-1)),
+          Expanded(
+              child: Form(
+                  key: _formKey,
+                  child: Stepper(
+                      currentStep: currentStep,
+                      controlsBuilder: (context, {onStepContinue, onStepCancel}) =>
+                      currentStep == steps.length - 1?
                       MaterialButton(
                           onPressed: onStepContinue,
-                          child: Text(currentStep == steps.length - 1
-                              ? 'Finish'
-                              : 'Next'),
+                          child: Text('Finish'),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
-                          color: Colors.blue),
-                  onStepContinue: () {
-                    _formKey.currentState.save();
-                    if (currentStep == steps.length - 1)
-                      saveData()
-                          .whenComplete(() => Navigator.of(context).pop());
-                    else
-                      this.setState(() => currentStep++);
-                  },
-                  onStepTapped: (step) =>
-                      this.setState(() => currentStep = step),
-                  steps: steps)))
-    ]));
+                          color: Colors.blue) : Container(),
+                      onStepContinue: () {
+                        _formKey.currentState.save();
+                        if (currentStep == steps.length - 1)
+                          saveData()
+                              .whenComplete(() => Navigator.of(context).pop());
+                        else
+                          this.setState(() => currentStep++);
+                      },
+                      onStepTapped: (step) =>
+                          this.setState(() => currentStep = step),
+                      steps: steps)))
+        ]));
   }
 
   Future saveData() async {
@@ -135,7 +149,7 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
   }
 
   TextFormField textField(
-          {@required String binding, String label, String tooltip}) =>
+      {@required String binding, String label, String tooltip}) =>
       TextFormField(
           maxLines: null,
           decoration: InputDecoration(
@@ -143,10 +157,13 @@ class _WorldBuilderPageState extends State<WorldBuilderPage> {
               border: OutlineInputBorder(),
               suffixIcon: tooltip != null
                   ? Tooltip(
-                      message: tooltip,
-                      showDuration: Duration(seconds: 5),
-                      child: Icon(Icons.help))
+                  message: tooltip,
+                  showDuration: Duration(seconds: 5),
+                  child: Icon(Icons.help))
                   : null),
           initialValue: widget.data[binding],
-          onSaved: (value) => widget.data[binding] = value);
+          onSaved: (value) {
+            widget.data[binding] = value;
+            exportFields[label] = value;
+          });
 }
